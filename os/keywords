@@ -1,0 +1,13 @@
+lecture 1:
+	batch systems
+	jobs
+	job control language
+	monitor
+	cpu-bound
+	io-bound
+	multiprogramming
+	uniprogramming
+	time-sharing
+	pre-emptive multitasking
+	quantum
+	time slice

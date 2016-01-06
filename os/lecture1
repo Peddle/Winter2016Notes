@@ -14,3 +14,29 @@ What is an operating System?
 	- resource manager	(efficiency)
 	- intermediate layer between application programs and hardware	(control)
 	- abstracts the details of h/w 	(convenience)
+
+-a brief history of os:
+	1. single programming and single processing
+		-single user at console, load program, run
+		-no os - simple libraries for convenience
+
+	2. single programming, batch systems
+		-maximize use through using a monitor that controlled execution of jobs
+		-jobs are queued, control is passed to job then back to monitor
+		-monitor limits access to system resources (protects the monitor memory, timeout, file system)
+
+-- aside --
+[cpu-bound - process limited by the speed of the cpu
+io-bound - process limiteed by the speed of completion of io operations]
+----
+
+	3. multiprogramming batch systems
+		-lots of idle cpu during io bound procersses
+			-switch to another job while waiting
+		-now requires memory management between jobs, interrupt driven io & DMA, and scheduling
+
+	4. time-sharing systems
+		-batch systems are not interactive
+		-time sharing switches tasks even when not io bound
+			tasks execute for a quantum/time slice then the os can pre-empt them
+		-OS now has more advanced memory management and scheduling requirements, and security
