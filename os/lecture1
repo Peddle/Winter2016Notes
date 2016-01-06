@@ -1,0 +1,16 @@
+What is an operating System?
+
+-makes things simpler
+-responsible for:
+	- memory allocation
+	- process management
+	- I/O devices
+	- file system
+	- account access
+	- security
+	- hardware
+
+-it does the following:
+	- resource manager	(efficiency)
+	- intermediate layer between application programs and hardware	(control)
+	- abstracts the details of h/w 	(convenience)
