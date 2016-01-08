@@ -11,3 +11,17 @@ lecture 1:
 	pre-emptive multitasking
 	quantum
 	time slice
+lecture 2:
+	kernel
+	interrupts
+	3 forms of interrupt handling
+	vectors
+	entry points
+	IRQ
+	trap
+	fault
+	signals
+	MMU
+	programmed I/O
+	interrupt-driven I/O
+	DMA
