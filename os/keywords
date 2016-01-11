@@ -25,3 +25,12 @@ lecture 2:
 	programmed I/O
 	interrupt-driven I/O
 	DMA
+lecture 3:
+	application programs
+	IDT (vector table)
+	signals
+	process
+	Process Management
+	privelege level
+	process spawning
+	

@@ -1,0 +1,60 @@
+layers:
+
+application programs    user space
+--------------------- (protection boundary)
+kernel                  kernel space
+---------------------
+hardware
+
+Priveleged instrtuctions
+    -lets the OS restrict access to certain instructions
+    -eg. x86 HLT instruction shuts down a core
+    -illegal instructions will cause a fault
+    -can set access based on privilege level
+        -eg x86 has rings: 
+            user-> ring 3 (restricted)
+            kernel -> ring 0 (unrestricted)
+
+-kernel uses interrupts extensively
+    -used to let us get nto kernel mode in the first place, from user mode -> mode switch
+
+    user space
+
+    -app code calls an interrupt from IDT (interrupt descriptor table)
+
+    ___________________
+
+    kernel space
+
+    -interrupt service routine is run
+
+
+
+    -switch may be intentional or outside user control
+    -eg. system call: call a kernel function in kernel mode from user mode
+    -mode switch must save state (PC & status, maybe registers, process details), enter privileged mode and go to kernel code; upon completion exit privileged mode and restore state -> expensive
+
+    -interrupts can interrupt kernel code
+        -interrupts can be nested; saved state needs to be a stack
+        -may be  prioritized
+
+    Case study: Linux
+        -monolithic kernel
+        -kernel can be extended with loadablle moudles:
+            -dynamically loaded
+            -stackable
+        -key linux features:
+            -system calls: set up regs and invoke
+                -INT 0x80 or SYSENTER (newer, more efficient)
+                -typicall through library code/wrapper
+            -signals: used to communicate from kernel to user code
+                -eg. SIGINT from ctrl-c or SIGSEGV for seg fault
+                -process manage
+
+Process Management
+    -a multiprogramming OS needs to keep track of individual executing tasks
+    -a process is the encapsulation of a single independent task & all the information that describes its execution
+        -each instance of execution is a process
+        -processes can create child processes (process spawning)
+        -processes can communicate with each other
+
