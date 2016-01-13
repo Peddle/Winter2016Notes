@@ -45,3 +45,6 @@ Five State Process Model
 -Use a queue for ready and a Queue for each type of event a blocked process can be waiting for
 
 -CPU is much faster than IO
+    -most processes spend most of their time blocked
+-if all are blocked, CPU is idle
+    -let more processes run
