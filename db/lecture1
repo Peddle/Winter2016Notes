@@ -1,0 +1,15 @@
+Database:
+    A database is an organized collection of related data, usually stored on a disk
+
+DBMS:
+    is a software package designed to store and manage the DB
+
+Data Models:
+    a collection of concepts for describing data, data relationships, data semantics, data constraints
+
+Instance vs schema:
+    model vs contents
+
+SQL:
+    Structured Query Language
+
