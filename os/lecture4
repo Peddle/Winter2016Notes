@@ -1,0 +1,47 @@
+Processes
+    -consists of:
+        -a sequential set of executing oprtations
+        -a current processor state (registerss, flags, etc)
+        -a set of system resources (memory, file descriptors, etc)
+    -the kernel keeps a list of running process (process table)
+
+Simplified Model of Multiprogramming Process Management
+    -given a uniprocessor system, one process can execute at a time the rest wait
+    -each process has two states: running or waiting
+    -the CPU has a queue of waiting processes
+        -when a process is create, it is enqueued
+        -queue is managed by dispatcher
+            -sets up CPU to run process at head
+            -dequeues it
+            -starts execution
+        -when system timer interrupts or process waits for IO, dispatcher takes over
+            -pause the process
+            -enqueues it
+            -gets next process from queue
+        -the queue contains processes waiting to be executed AND waiting for IO to complete (blocked)
+            -what happens if a process waiting for IO gets to head?
+
+-solution: add a new state for blocked processes
+    running, ready, blocked, start, exit
+
+Five State Process Model
+    -Start
+    -Ready
+    -Running
+    -Blocked
+    -Exit
+
+1. Start - created, waiting for setup and for OS to admit it
+-ADMIT: process gets admitted
+2. Ready - ready to be run
+-DISPATCH: starts executing on CPU
+3. Running - current process being run
+-TIMEOUT: alloted CPU time is up. process is paused and put back on ready queue
+-EVENT WAIT: process is blocked on IO
+-RELEASE: process is finished executing
+4. Blocked - process is blocked and is waiting for an event to occur
+-EVENT OCURRS: process is ready again
+
+-Use a queue for ready and a Queue for each type of event a blocked process can be waiting for
+
+-CPU is much faster than IO

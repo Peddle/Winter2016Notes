@@ -33,4 +33,10 @@ lecture 3:
 	Process Management
 	privelege level
 	process spawning
-	
+Lecture 3:
+	process table
+	dispatcher
+	blocked process
+	five state process model
+	ready queue
+	blocked process queue
