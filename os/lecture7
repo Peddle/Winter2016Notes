@@ -1,0 +1,47 @@
+Creating Processes:
+
+-build from scratch:
+    1. load code & data into mem 
+    2. init run time mem (heap and stack)
+    3. init the PCB
+    4. tell the dispatcher to start exec
+(need to be kernel to do this!)
+
+-typically done through OS function (POSIX: Unix + Linux + ...)
+    -system(...) launches external executable, blocking until done
+    -posix_spawn(...) launches an executable as a serarate (child) process, no wait
+     [Windows equivalent: CreateProcess(...)]
+
+-for us we'll use: fork()
+    1. stops current proc
+    2. creats a new process table entry for a child
+    3. gives child a unique pid
+    4. copy the process image of parent to child
+    5. increments usage counts of ref-counted resources owned by parent
+    6. set child to ready
+    7. resume parent proc
+
+int child_pid;
+
+child.pid=fork();
+// if pid is zero, in child
+// if pid is >0 in the parent, pid is child's pid
+// if pid is <0, error
+
+if(child.pid == 0){
+    //child code
+}
+else{
+    //parent
+    if(child.pid <0){
+        //parent but something went wrong
+    }
+}
+
+execv
+commmon use case: have child execute a diff program
+    -call an exec function 
+    -replace the current program and data with a new one
+
+-if you want the parent process to wait for the child process, call waitpid(pid,...)
+    fork + exec + wait ~= system

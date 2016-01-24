@@ -33,10 +33,33 @@ lecture 3:
 	Process Management
 	privelege level
 	process spawning
-Lecture 3:
+Lecture 4:
 	process table
 	dispatcher
 	blocked process
 	five state process model
 	ready queue
 	blocked process queue
+Lecture 5:
+	suspended processes
+	seven state model
+	process table
+	process image
+	process control block (PCB)
+	PID
+	UID
+Lecture 6:
+	context switch
+	mode switch
+	dispatcher
+	scheduler
+	preempted
+	interruptible tasks
+	uninterruptible tasks
+Lecture 7:
+	POSIX
+	fork
+	exec
+	wait 
+	system
+	

@@ -1,0 +1,53 @@
+-if we had more processes executing, we will also have more blocked processes
+-solution: if a process is going to be blocked for a while, move it out of memory onto a secondary storage (disk): swapping
+    -swapped processes are suspended
+
+This adds two new states for processes:
++ready but suspended
++blocked but suspended
+
+-admit now adds the process to ready/suspended
+-from there it goes into the ready queue once memory has been allocated for it
+-blocked processes can be suspended
+-when they're ready they're moved to ready/suspended
+-if we have more memory space we can unsuspend blocked (moves to blocked)
+
+This is a Seven-State Model
+
+Suspension may be caused by:
+    -waiting for event
+    -explicit requed to wait
+    -OS request (background process or error response)
+    -user request
+    -parent process request
+    -explicit need for swapping due to low resources
+
+Kernel Data Structures:
+-managing resources
+    -processes, [IO activities, memory usage, open files] (these can be grouped be process)
+-process table: list of pointers to process images
+-process image: 
+    -memory containing
+        -program code (text)
+        -static data
+        -dynamic data
+        -stack
+        -process control block
+            -meta data about processes
+            -ID:
+                -PID
+                -UID of user creator
+            -processor state: execution context (registers, PC, stack ptr)
+            -process control information:
+                -process state & priority
+                -blocking info (what we're waiting for)
+                -resources: mem usage, file tables, privleges, etc.
+Changing process state:
+    -changing the syaye of the currently running process starts with a mode switch
+        -invokes kernel code
+        -need to ensure process state is saved to that when it resumes execution, everything is restored
+        -save state to its PCB
+            -registers, status -> including FPUm MMX, SSE
+        -kernel updates internal DS (ready queue)
+        -state for new process restored from its PCB
+        -switch address spaces for the new process

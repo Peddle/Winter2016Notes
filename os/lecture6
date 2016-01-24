@@ -1,0 +1,35 @@
+mode switch
+  vs
+context switch - switch to executing a diff processs (expensive)
+
+dispatcher - responsible for bringing a process to CPU (it does context switching)
+
+state transitiond and Qs are managed by scheduler
+
+Whhere is the kernel?
+1. nonprocess kernel: OS has its own execution state (mem, stack)
+  -state switching (from user to kernel) is not as heavy as context switching due to this
+OR
+2. kernel executes in user processes
+  -process address space includes code and data for user and kernel (protected & shared)
+  -after mode switch, exec in current process
+    -at end, return to user mode or context switch
+  -kernel is an interrupt handler
+OR
+3. kernel has its own processes
+  -full context switch to kernel code or between kernel modules
+
+Windows does 1
+
+Unix does some of 2 and some of 3
+  -uses a 9 state model
+    -distinguishes between process running user code vs kernel code
+    -preempted code is finished with kernel mode work
+    -but there is always a running process
+  -on exit, process notify their parent that they are going to end, enters zombie state until parent acks
+
+Linux
+-distingushes between interruptable and noninterruptible wait state
+  -interruptible tasks can be awakened by event or signal while uninterruptible tasks can only be awakened by event
+  -uninterruptible tasks can lead to unkillable processes
+  -see top, ps f, man ps
