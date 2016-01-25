@@ -1,0 +1,38 @@
+Where do process come from?
+                pid0      wait on init
+bootstrap ---> swapper ------------------> 
+                  |         +--pid1--+
+                  +-------->|  init  |
+                     each   +--------+      +-------------------------------+
+                                |          \|/                              | exit
+                                |        +-------+ exec +-------+ exec  +-------+/
+                                +------->| getty |----->| login |------>| shell |-----------+
+                                  fork   +-------+      +-------+       +-------+\          |
+                                                                            | fork          |
+                                                                            |               |
+                                                                            +---->+-----+   | exit
+                                                                                  | cmd |---+
+                                                                                  +-----+
+
+IPC
+-how do isolated processes share data?
+-provide an interprocess communication mechanism that:
+  1. message passing
+    -tasks 'perform' an explicit data exchange
+    -copies data
+  or
+  2. shared memory
+    -tasks share address space
+
+Message Passing:
+-need two atomic operations
+  -guaranteed to finish without context
+  -send(dest,msg)
+  -recv(&src, &msg)
+-calls can be blocking (synchronous, waits) or non-blocking (asynchronous, returns (maybe) before op done)
+-combos:
+  1. blocking send & blocking recv "rendezvous"
+    -very controlled synchronization
+    -knows when it is completed on both sides
+  2. to be continued dun dun dun!
+  
