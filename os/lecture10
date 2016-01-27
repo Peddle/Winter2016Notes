@@ -1,0 +1,45 @@
+Signals:
+-brief, asynchronously, kernel to proc or proc to proc
+-to send signals: kill(pid, signum)
+              receiver-^      ^-sigint, etc
+
+(also UNIX command: kill -signal pid )
+        eg. kill -HUP 123
+
+-also raise(signum) -> signal self
+-also sigqueue(...) <--- (does essentially the same thing as kill but more on this later)
+-all signals have a default handler
+  -exit (eg. SIGINT)
+  -core (eg. SIGSEGV)
+  -stop (suspend, eg. SIGSTOP)
+  -continue (resume, eg. SIGCONT)
+  -ignore (eg. SIGCHLD)
+-write and register a signal handler to override
+  - some sigs (eg. SIGKILL, SIGSTOP) can;t be overriden
+  -SIGHUP ("hangup") is ike a soft kill for interactive procs also used by (some) daeomons to restart and reoad config
+
+-to register a signal handler:
+  signal(signum,void (*handler.func)(int))
+    ^-function pointer to void handler(int signum)
+        we can pass SIG_IGN to ignore or SIG_DFL to rever to default
+
+eg. void catch_signal(int signum){
+
+  //handle
+  if(______ == isgnum){
+    //handle sig
+  }
+}
+
+-alt: pause() or sigsuspend()
+-better: sigaction(...)
+  -signal() is deprecated for cross-platform incosistency
+  eg. signal handler may be auto-deregistered after handle
+
+Pipes
+
+-a FIFO buffer between two processes that allows one way communication
+  -two-way? another pipe!
+-OS manages buffering
+  -typically non-blocking except blocks when buffer is full
+-purely a byte stream
