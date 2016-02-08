@@ -73,4 +73,8 @@ Lecture 10:
 	kill
 	raise
 	pipes
+Lecture 11:
+	anonymous pipes
+	named pipes
+	"fifos"
 	

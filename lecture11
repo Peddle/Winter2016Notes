@@ -1,0 +1,28 @@
+Pipes continued
+-work like raw data files
+-commmands (man 2 open):
+  -use 
+  -open 
+  -read
+  -write
+  -close
+-unstructured: messages have no beginning or end
+
+Two types of pipes:
+
+1. anonymous pipes ("pipes")
+  -no global identifier (found through file descriptor - int)
+  -used to communicate between related processes (eg. parent/child fork)
+  -destroyed on process exit
+  -like the mechanism used for pipes in UNIX
+    -sort < abc.txt | uniq | less
+  -created with pipe(int pipefd[2])
+                      ^- returns an fd open for reading in pipefd[0]
+                                                writing in pipefd[1]
+
+  -typical use: create pipe first, then fork()
+    -each closes the end of the pipe it's not using
+    -required for pipe to behave correctly fore done & error handling
+2. named pipes ("aka fifos")
+  -creates a special/virtual file in f/s to represent pipe
+    (it's not on storage)
