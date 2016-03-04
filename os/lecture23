@@ -1,0 +1,88 @@
+
+cutoff for midterm is end of monday's class
+
+(everything up to and including message passing)
+
+
+today: Pthreads
+
+Pthreads
+pthread_cond_wait(&ev, &cv_lock)
+
+why both a cv and a lock?
+Why both a cv AND a lock?
+
+  -condition variables by themselves are not atomic
+  -lock(cv_lock);
+   signal(cv);
+   unlock(cv_lock);
+
+
+  -if we: lock(cv_lock);
+          wait(cv);     //instant deadlock with
+          unlock(cv_lock);
+
+      or: wait(cv);
+          lock(cv_lock);  //don't know if we can get the lock?
+          unlock(cv_lock);
+
+  so pthread_cond_wait combines the two
+
+  -the "wait" operation is "atomic", wrt any operation on the same mutex & cond var
+
+  -typical use case:
+    lock(cv_lock);
+    wait(cv, cv_lock);
+    //CS
+    unlock(cv_lock);
+
+-if we use pthread_cond_broadcast to notify all waiting threads about the availability, each thread is still subject to its mutex
+
+* WARNING *
+-wait can receive "spurious wakeups" (spurious means "for no reason")
+  -multiple threads can wake on one signal, but onle one will get the lock
+    +-> can have multiple cond var changes while blocked
+-prevention is too expensive on multiprprocessing systems
+-requires a boolean predicate be true if the thread should proceed
+  -always use a while loop to verify the condition we were waiting for
+
+lock(cv_lock);              |     lock(cv_lock);
+while(some_Condition){      |     some_condition = false;
+  wait(cv, cv_lock);        |     signal(cv);
+}                           |     unlock(cv_lock);
+some.condition = true;
+unlock(cv_lock);
+
+^^^^^ correct use of wait & signal ^^^^^
+
+-eg. wait on a counting semaphore x
+lock(&cs);
+while( x <= 0 ) {
+  //ensures that another thread didn't get it first
+  wait(&x_cond, &cs);
+}
+x--;
+unlock(&cs);
+
+-on wake-up we verify that the value is what we expected
+-need to declar our condition (x) as volatile:
+  volatile int x;
+
+Thread Pools:
+-thread creationg & deletion has overhead
+-what if you have a lot of short-lived threads?
+  -eg. a web server, each thread delivers a resource
+
+-alternative: create a pool of persistent (worker) threads
+  -main thread receives a reques, finds an available worker thread and passes it on
+  -request is stored in a buffer local to the main thread
+  -use a shared buffer to store the message when passed to to a thread
+  -worker copies the data into its local buffer to avoid locking the main thread
+-size of the pool defines the level of concurrency or can grow/shrink
+-implementation:
+  -main thread use a cond var to wake a worker
+  -workers sleep on cond var, wake, process, sleep(repeat)
+  -if all the workers are active, have to hold on to request until we get a worker that's available to process it.
+    -main thread uses another cond var to wait for a worker
+  -main thread needs to know when a worker is done with shared buffer
+    -use yet another condition var to signal when done.
