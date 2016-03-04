@@ -1,0 +1,31 @@
+Concurrency
+-the interleaving of tasks (sequence of instructions on one or more processors)
+  -switch between tasks, execute instructions from each in some order
+  -interleaving is non-determinisitic
+-"concurrency" is general
+  -processes are isolated from eachother, tasks may not be.
+  -concurrency includes "fake paralelism" (#tasks > #cpus)
+    -parallelism executes multiple tasks @ same time
+  -concurrency abstracts out number of cpus
+-eg -web server
+    -an app progress bar
+    -protein folding
+
+why is it hard?
+
+  static int balance;
+
+  void deposit(int amt){
+    int new_balance = balance + amt;
+    balance = new_balance
+
+  }
+
+  what if two tasks can call deposit()?
+
+-outcome is dependent on order of executions (of our control)
+    -race condition
+
+source of the problem: shared variable balance
+makes our code non-reentrant
+

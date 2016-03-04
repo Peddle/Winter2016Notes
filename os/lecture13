@@ -1,0 +1,49 @@
+Concurrency
+
+-non-reentrant code: cannot be safely interrupted & re-enter (resumed) later
+-uses shared data or [self-modifying code] or calls other non-reentrant functions
+
+-solutions
+  1. make the code re-entrant
+  2. protect the critical sections of the code (eg. parts that access the shared data) to prevent "simultaneuos access"
+
+-what kinkds of concurrent tasks are there?
+  -tasks that are unaware of each other but access the same resource (unintentional)
+  -tasks that communicate via a shared resource (intentional)
+  -tasks that cooperate in order to share a resource (coordinated)
+
+-goal: shared resources require safe access:
+  -tasks "completing" for shared resources must not be negatively affected by other tasks using that resource
+  -ie no rare conditions
+-if tasks were executed serially (one after the other)
+  the outcome would be correct
+    -need to make our tasks serializable
+
+    outcome of any interleaving equivalent to some serial order
+
+  -achieve this by restricting access to shared resource to one task at a time : mutual exclusion: (mutex)
+    -the shared resource protected by mutex : critical resource
+    -the code that accesses the critical resource: critical section
+    -mutex makes CSes serializable
+
+-eg (not real code)
+
+static int balance; //critical resource
+
+void deposit(int amt){
+  lock(balance);
+
+  int new_balance = balance + amt; | critical section
+  balance = new_balance;           |
+
+  unlock(balance);
+}
+
+a task must wait until another task finishes the entire critical section before it can access balance
+  -the lock()call waits
+
+-problems:
+  1. what if somebody lcoks a resource but never unlocks it?
+  2. what if two tasks need to access resurces locked by the other before they continue
+
+

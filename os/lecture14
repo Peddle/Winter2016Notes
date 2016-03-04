@@ -1,0 +1,26 @@
+Threads:
+-the process is a unit of resource ownership
+-threads are a unit of execution
+  -a process can contain one or more thread
+  -each thread has some of its own context (eg stacks)
+  -all other resources of the process are shared between threads
+    -code, static data, heap, files, etc
+
+-OS schedules threads within or between processes
+-threads are "lightweight": minimal overhead to switch between, inexpensive to create
+-only require 3 states: run, ready, blocked (rest at process level)
+-communication between our threads does not require OS
+  -use shared memory
+
+Programming with pthreads:
+  "POSIX threads" -cross-platform threading lib
+  -threads run as separate subroutines
+    -end when the routine exits
+  -build with -lpthread
+
+  int pthread_create(pthread_t *tid, attr, void* (fn))
+
+  int pthread_join(pthread_t tid, void **result)
+    calling thread waits for tid to exit gets back its result (return value)
+
+  pthread_join is a blocking call

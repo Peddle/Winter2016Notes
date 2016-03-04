@@ -1,0 +1,63 @@
+The producer-consumer problem
+
+  buffer b: -> |||||||||____________________________||||||||||||| ... infinity
+                        ^out                        ^in
+
+common sort of problem
+
+-implementation
+
+iteration 1:
+
+Producer
+---------
+
+while(true){
+  produce(v);
+
+  b[in] = v;
+  in++;
+}
+
+Consumer
+--------
+
+while (true){
+  while(in){
+    wait...
+  }
+  x = b[out]
+  out++
+
+  consume(x);
+}
+
+-need to enforce read & write serialization with mutex
+-easiest solution: coarse-grained locking all buffer & index access by making it part of the CS
+
+Iteration 2:
+
+Producer
+---------
+
+while(true){
+  produce(v);
+  wait(lock);
+  b[in] = v;
+  in++;
+  signal(lock);
+}
+
+Consumer
+--------
+
+while (true){
+  wait(lock);
+  while(in){
+    wait...
+  }
+  x = b[out]
+  out++
+  signal(lock);
+  consume(x);
+}

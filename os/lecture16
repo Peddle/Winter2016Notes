@@ -1,0 +1,128 @@
+Mutex:
+-goal: protexct access to critical resources
+1. deadlock: two or more tasks waiting for a resourfce held by another
+  -eg T1 locks R1, waits on R2, but T2 holds R2, waits for R1
+
+2. starvation: when a task never gets access to a resource
+
+tool: atomicity: an operation or sequence is atomic if no other tasks or operations can be interleaved until it is complete
+  -in hardeware, world-level accessto memory is atomic
+
+First attempt:
+
+int turn = 0;
+//task # 1
+
+while(turn != 0){
+  //wait
+}
+----- CS -------
+turn = 1
+
+
+//task #2
+while(turn != 1){
+  //wait
+}
+
+
+----- CS -------
+turn = 0
+
+-turn-taking mutex
+-problems:
+  -doesn't scale well to >2 tasks
+  -must strictly alternate execution
+  -not robust: what happens if a task crashes in the CS
+-not a good solution
+
+Second Attempt:
+bool flag[] = {false, fals,e false};
+
+Task #0:
+while (flag[1]){
+  //wait
+}
+flag[0] = true
+------ CS ----
+flag[0] false;
+
+
+Task #1:
+
+while (flag[0]){
+  //wait
+}
+flag[1] = true
+------ CS ----
+flag[1] false;
+
+-flag indicates ownership of crit resource
+-no more turn-taking, more extensible
+-problem:
+  -no mutex: code from task #1 can be interleaved a * both enters CS
+-cause: we test the flags before setting
+
+Third Attempt:
+
+bool flag[] = {false. false};
+
+Task #0
+flag[0] = true
+while(flag[1]){
+  //wait
+}
+
+--- CS  -----
+
+flag=[0] = false;
+
+Task #1
+flag[1] = true
+while(flag[0]){
+  //wait
+}
+
+--- CS  -----
+flag[1] = false;
+
+-advantage = mutex (mutual exclusion)
+-problem:
+  -we have made the wait part of the cs
+  -task 0 sets flag[0], interupted
+  task 1 sets flag[1], enteres while(wait)
+  task 0 enters while(wait): deadlock!
+
+  -solution: prevent test and set from being atomic
+
+  Fourth attempt:
+  bool flag[] = {false, false};
+
+  Task #0
+flag[0] = true
+while(flag[1]){
+  flag[0] = false;
+  yield();
+  flag[0] = true;
+}
+
+--- CS  -----
+
+flag=[0] = false;
+
+Task #1
+flag[1] = true
+while(flag[0]){
+  flag[1] = false;
+  yield();
+  flag[1] = true;
+}
+
+--- CS  -----
+flag[1] = false;
+
+
+our flags indicate intent we can back off and let another task go first
+-problem: livelock if tasks are in lock step
+
+

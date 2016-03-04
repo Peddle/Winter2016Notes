@@ -1,0 +1,63 @@
+Monitors:
+-a bit of java
+  -implement runnable, wrap thread around it, thread.start()
+  -every oobject has an "intrinsic lock" == monitor
+  -lock with synchronized ~~~method~~~~ (makes a method monitored)
+  -finer-grained locking: syncrhonized(this){~~~~~}
+  -for multiple locks: private Object lock;
+                       syncrhonized(lock) {~~~~~}
+  -higher-level constructs (objects), eg. semaphore
+-add a condition variable (semaphore without counting)
+-each condition variable has a Q and operations: cv.wait() tasks blocks until cv.signal (resume a blocked task, if any)
+
+
+Producer:
+
+synchronized void append(itemx)
+  if(count == size)
+    not_full.wait();
+  b[in] = x
+  in = (in + 1) % size;//circular
+  count++;
+  not_empty.signal();
+
+
+Consumer
+
+synchronized item take()
+  if(count == 0)
+    not_empty.wait();
+  x = b[out];
+  out = (out+1)%size
+  count--;
+  not_full.signal();
+
+-we need the count because wait() will always wait for a signal (not waiting on something)
+-we need to be synchronized (mutex) to protect the CS (including the cond vars)
+
+Produce
+
+while(true){
+  v = produce();
+  bb.append(v);
+}
+
+
+Consumer
+
+while(true){
+  w = bb.take()
+  consume(w);
+}
+
+-in Java, Object has a .wait() method and .notify() and .notifyAll() to signal
+
+Condition Variables in pthreads:
+
+pthread_cond_t cv;    Null
+pthread_cond_init(&cv, attr);   //required
+pthread_cond_signal(&cv);       //unblocks one waiting thread
+pthread_cond_broadcast(&cv);    //unblocks ALL waiting thread
+pthread_cond_broadcast(&cv);    //unblocks mutex cv_lock
+                                  blocks on the cond var
+                                  relocks cv_lock

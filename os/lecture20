@@ -1,0 +1,93 @@
+-the producer consumer problem
+
+buffer b: |||||||||             |||||||||||| .... infinity
+                  ^out          ^in
+
+-implementation: 
+
+producer:
+while(true){
+  produce(v);
+  wait(lock);
+  b[in] = v;
+  in++;
+
+  signal(lock);
+}
+
+consumer:
+while(true){
+  wait(lock);
+  while(in < out){wait...}
+  x=b[out];
+  out++;
+  signal(lock);
+  consume(x);
+}
+
+-need to enforce read & write serialization with mutex
+-easiest solution coarse-grained locking all buffer & index accessby making it part of the CS.
+
+-solution: use finer-grained locking
+  -add another lock to control the consumer
+    Semaphore lock, num_data;
+    init(lock, 1);
+    init(num, data, 0);
+
+producer:
+
+while(true){
+  produce(v);
+  wait(lock);
+  b[in++] = v;
+  signal(lock);
+  signal(num_data);
+}
+
+consumer:
+while(true){
+  wait(num_data);
+  wait(lock)
+  x = b(out++);
+  signal(lock);
+  consume(x);
+}
+
+-num_data counts the items available in the buffer
+
+-what if the buffer is finite? bounded buffer problem
+  -size n
+  -can't write to a full buffer (wait)
+  -solution: use a counting semaphore on the number of spaces left
+
+  Semaphore lock, num_data, space_left;
+    init(lock, 1);
+    init(num_data);
+    init(space_left, n);
+
+  producer:
+
+  while(true){
+    wait(space_left);
+    wait(lock);
+    //CS
+    signal(lock);
+    signal(num_data);
+  }
+
+  consumer:
+
+  while(true){
+    wait(num_data);
+    wait(lock);
+    //CS
+    signal(lock);
+    signal(space_left);
+  }
+
+  -locks the entire buffer on each access
+    -solution: finer-grained locking on just in & out.
+    -allows producers to be serialized independent of consumer
+  -still lock between producers
+    -try locking buffer elements: producer looks for next unlocked slot
+    -solution: go "lock-free": first in wins -> iterator loop

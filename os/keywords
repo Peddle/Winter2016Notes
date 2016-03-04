@@ -16,8 +16,7 @@ lecture 2:
 	interrupts
 	3 forms of interrupt handling
 	vectors
-	entry points
-	IRQ
+	entry points IRQ
 	trap
 	fault
 	signals
@@ -77,4 +76,9 @@ Lecture 11:
 	anonymous pipes
 	named pipes
 	"fifos"
-	
+Lecture N-1:
+	dekker's alg,
+	TAS
+	CAS
+Lecture N:
+	busy wait / spin lock

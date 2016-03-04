@@ -1,0 +1,92 @@
+Atomic Operations
+-uninterruptible op, that executes to completion.
+  -work-level ops
+  -special ops: tas/cas
+  -may have other ops: man 3 atomic
+-mutex impl:
+  while ( !locked){
+    wait //busy wait aka spinlock
+  }
+
+Semaphores
+-busy waits are a result of locks being passive.
+  -make them active instead! (capable of notifying when something becomes unlocked)
+-a form of signaling
+-a task can sleep until it gets a signal
+
+Counting Semaphore:
+  -defnie a semaphore variable (signed int) & 3 ops:
+    1. initialize var to some non-negative value
+      -eg. # of concurrent tasks allowed in a CS (Critical Section) => 1
+    2 decrement the var and wait ("P"/acquire) until it is non-negative (wait == block)
+    3. increment the var and signal ("V"/release) if it is  negative by unblocking a waiting task
+      -if it is not negative, there would be no waiting tasks
+
+  eg) var = 1
+            0   task 1 : wait
+           -1                   2: wait (blocks)
+            0   1: signal -------^      (unblocks)
+           -1                                       3: wait (blocks)
+           -2                                       4: wait (blocks)
+           -1                   2: signal
+                                          3: unblocks)
+            0                             3: signal
+                                                    4: unblocks
+            1                                       4: signal
+
+-need a list to keep track of who's blocked
+  -strong semaphore: strict FIFO Queue
+  -weak semaphore: unblock in any order
+
+-implementation:
+
+struct{
+  int count;
+  Queue blocked;
+} Semaphore;
+
+wait(Seamphore *s){
+  s->count--; //this
+  if(s->coun<0){ //and this
+    enqueue(self, s->blocked); //and this all needs to be atomic
+    block(self);
+  }
+}
+
+signal (semaphore *s){
+  s->count++; // this
+  if(s->count <=0){ //and this
+    task=deq(s->blocked); // and this all needs to be atomic
+    unblock(task);
+  }
+}
+
+implementation must be atomic and block/unblock are system calls -> heavier than busy wait
+
+how? use specialized instr avoid task switch by disabling INT busy wait elsewhere
+|
+|
+> efficiency comes from P/V being predictably short
+
+-eg use a semaphor for mutex:
+
+Semaphore lock;
+init(&lock, 1);
+
+wait(&lock);
+//CS
+signal(&lock);
+
+Producer-Consumer Problem
+-we have one or more producers that make data and place it ina shared buffer for removal and use by a single consumer -> concurrently
+
+-start with simplication: unlimited buffer
+-correctness guarantees:
+  -only one task can read/write at a time(atomic read, write)
+  -consumer can't read from an empty buffer (wait on read)
+
+  buffer b: -> |||||||||____________________________||||||||||||| ... infinity
+                        ^out                        ^in
+
+
+

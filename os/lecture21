@@ -1,0 +1,53 @@
+Synchronization:
+-these mechanisms give us the ability to design our concurrent tasks to make them serializable
+-can approach this in the form of higher-level abstractions
+  -> synchronization between tasks
+
+Approaches:
+1. use message passing
+  -eg. for mutex between threads or between distributed processes
+
+  msgQ mutex;
+  send(mutex, null);
+
+  to acquire the lock
+
+  recv(mutex, null); -> acquire the lock by taking message out of 
+
+  //CS
+
+  send(mutex, null); -> release the lock by putting it back
+
+  -can use this to build a counting semaphore: eg.bounded buffer
+
+        msgQ may_produce;
+        msgQ may_consume;
+
+        for(i=0; i< buffer_capacity; i++)
+          send(may_produce, null);
+
+producer:
+
+while(true)
+  recv(may_produce, null)
+  //cs
+  send(may_consume, null)
+
+consumer:
+while(true)
+  recv(may_consume, null);
+  //cs
+  send(may_produce, null);
+
+-used pervasively in functional languages (eg. erlang)
+-advantage: -shared memory can be faster than message passing
+
+2. monitors: a cnostruct that abstracts synchronization by encapsulatinglocking in an object
+  -only one task can be active in the monitor
+    -course grained locking over an entire object
+  -all other tasks in the monitor are blocked
+    -instance variables are private & shared data
+    -method call include mutex: method calls are atomic
+  -naive implementation: wrap a mutex around the class
+    -problem: what if we need to wait on some condition?
+      (eg. producer-consumer: locks entire Q waiting for data...)
